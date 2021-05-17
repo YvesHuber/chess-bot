@@ -1,3 +1,6 @@
+const { count } = require("console");
+const { Collection } = require("discord.js");
+
 Discord = require("discord.js");
 config = require("../config.json");
 client = new Discord.Client();
@@ -66,7 +69,7 @@ function getFormatedField() {
 }
 client.on("message", function (message) {
 
-    client.user.setActivity("with the one and only god Dimi", {
+    client.user.setActivity("with GF Dad", {
         type: "STREAMING",
         url: "https://github.com/YvesHuber/chess-bot"
     });
@@ -93,9 +96,6 @@ client.on("message", function (message) {
         message.reply(`Pong! This message had a latency of ${timeTaken}ms.`);
     }
 
-    else if (command === "cheese") {
-        message.channel.send("🧀");
-    }
 
     else if (command === 'chess') {
 
@@ -119,7 +119,6 @@ client.on("message", function (message) {
                             let currentPos = new Object();
                             index = 0
                             //dabaddby
-                            console.log(row)
                             switch (row) {
                                 case 'a':
                                     // field[y][0]
@@ -167,6 +166,8 @@ client.on("message", function (message) {
                             currentrow = turn[0].slice(0, 1)
                             currentnum = turn[0].slice(1, 2)
                             futuretrow = turn[1].slice(0, 1)
+
+                            console.log("DA POLICE" + turn[0])
                             futurenum = turn[1].slice(1, 2)
                         }
                         catch (err) {
@@ -174,37 +175,59 @@ client.on("message", function (message) {
                             return
                         }
                         let hasMoved = false;
-                        currentfield = fieldchooser(currentrow, currentnum)
-                        futurefield = fieldchooser(futuretrow, futurenum)
+                        console.log("futureRow" + futuretrow + "futurenum" + futurenum);
+                        currentfield = fieldchooser(currentrow, currentnum);
+                        futurefield = fieldchooser(futuretrow, futurenum);
+                        let y = currentfield[0]; // should actually be y 
+                        let x = currentfield[1]; // should actually be x
+                        //Future
+                        let fy = futurefield[0];// should actually be fy 
+                        let fx = futurefield[1];// should actually be fx
                         console.log("current Index", currentfield, "future Index", futurefield)
-                        console.log(typeof (field[currentfield]))
-                        console.log(field[currentfield[0]][currentfield[1]])
-                        if (field[currentfield[0]][currentfield[1]] == w || field[currentfield[0]][currentfield[1]] == b) {
+                        if (field[y][x] == w || field[y][x] == b) {
                             message.channel.send("No Valid Move")
                             return
                         }
-                        /*else {
-                                                    // zukunft = currentfield <pawn>
-                        
-                                                    field[futurefield[0]][futurefield[1]] = field[currentfield[0]][currentfield[1]];
-                                                    field[currentfield[0]][currentfield[1]] = wab[currentfield[0]][currentfield[1]]
-                        
-                                                }*/
 
-                        //FUNCTIONS FOR PAWNS
-                        switch (field[currentfield[0]][currentfield[1]]) {
+                        //FUNCTIONS FOR PAWN //when yves (Real name if) is sus
+                        const figure = field[y][x]
+                        //const color = str.slice
+                        switch (field[y][x]) {
                             case wp:
-                                console.log("Pawn selected");
-                                pawn(field, currentfield, futurefield, message);
+                                console.log("Pawnw selected");
+                                //pawn(field, message,x,y,fx,fy);
+                                whitepawn(field, message, x, y, fx, fy);
+                                message.channel.send(getFormatedField());
+                                break
+                            case bp:
+                                console.log("Pawn selected")
+                                blackpawn(field, message, x, y, fx, fy);
+                                message.channel.send(getFormatedField())
+                                break; //coomer detected
+                            case bb:
+                                console.log("bishop selected")
+                                bishop(field, message, x, y, fx, fy);
+                                message.channel.send(getFormatedField())
+                                break; //coomer detected
+
+                            case wb:
+                                console.log("bishop selected")
+                                bishop(field, message, x, y, fx, fy);
+                                message.channel.send(getFormatedField())
+                                break; //coomer detected
+
+                            case bn: // I AM RETARDED @everyone
+                                console.log("KNIGHT SELECTED");
+                                knight(field, message, x, y, fx, fy);
+                                console.log("went through function");
                                 message.channel.send(getFormatedField());
                                 break;
-                            case bn:
+                            case wn: // I AM RETARDED @everyone
                                 console.log("KNIGHT SELECTED");
-                                knight(field, currentfield, futurefield, message);
+                                knight(field, message, x, y, fx, fy);
                                 console.log("went through function");
-
+                                message.channel.send(getFormatedField())
                                 break;
-                            //message.channel.send(getFormatedField())
                         }
                     }
                 });
@@ -215,89 +238,8 @@ client.on("message", function (message) {
     }
 })
 
-//TODO: Fix canibalism among us (sus) same coloured pawns (a7 eats a6 black pawn) TODO: waht ?
-function pawn(field, currentfield, futurefield, message) {
-    if (field[currentfield[0]][currentfield[1]] == wp) {
-        // y2white and y7black 
-        if (currentfield[0] != 1) {
-            hasMoved = true;
-        } else {
-            hasMoved = false;
-        }
-
-        if (field[currentfield[0] + 1][currentfield[1] + 1] != w || field[currentfield[0] + 1][currentfield[1] + 1] != b || field[currentfield[0] + 1][currentfield[1] - 1] != w || field[currentfield[0] + 1][currentfield[1] - 1] != b) {
-            field[futurefield[0]][futurefield[1]] = field[currentfield[0]][currentfield[1]];
-            field[currentfield[0]][currentfield[1]] = wab[currentfield[0]][currentfield[1]];
-        }
-
-        if (hasMoved == true) {
-
-            if (futurefield[0] - currentfield[0] == 1) {
-                if (field[futurefield[0]][futurefield[1]] == w || field[futurefield[0]][futurefield[1]] == b) {
-                    field[futurefield[0]][futurefield[1]] = field[currentfield[0]][currentfield[1]];
-                    field[currentfield[0]][currentfield[1]] = wab[currentfield[0]][currentfield[1]];
-                } else {
-                    message.channel.send("STOP RIGHT THERE YOU CRIMMINAL SCUM moved true + bw")
-                }
-            } else {
-                message.channel.send("STOP RIGHT THERE YOU CRIMMINAL SCUM moved true")
-            }
-        } else {
-            if (futurefield[0] - currentfield[0] == 2 || futurefield[0] - currentfield[0] == 1) {
-                if (field[futurefield[0]][futurefield[1]] == w || field[futurefield[0]][futurefield[1]] == b) {
-                    console.log("Inside 2 or 1 wp");
-                    field[futurefield[0]][futurefield[1]] = field[currentfield[0]][currentfield[1]];
-                    field[currentfield[0]][currentfield[1]] = wab[currentfield[0]][currentfield[1]];
-                } else {
-                    message.channel.send("STOP RIGHT THERE YOU CRIMMINAL SCUM + bw")
-                }
-            } else {
-                message.channel.send("STOP RIGHT THERE YOU CRIMMINAL SCUM /")
-            }
-        }
-
-        // HERE BEGINS BLACK PAWN
-    } else if (field[currentfield[0]][currentfield[1]] == bp) {
-        if (currentfield[0] != 6) {
-            hasMoved = true;
-        } else {
-            hasMoved = false;
-        }
-
-        if (field[currentfield[0] - 1][currentfield[1] + 1] != w || field[currentfield[0] - 1][currentfield[1] + 1] != b || field[currentfield[0] - 1][currentfield[1] - 1] != w || field[currentfield[0] - 1][currentfield[1] - 1] != b) {
-            field[futurefield[0]][futurefield[1]] = field[currentfield[0]][currentfield[1]];
-            field[currentfield[0]][currentfield[1]] = wab[currentfield[0]][currentfield[1]];
-        }
-
-
-        if (hasMoved == true) {
-            if (currentfield[0] - futurefield[0] == 1) {
-                if (field[futurefield[0]][futurefield[1]] == w || field[futurefield[0]][futurefield[1]] == b) {
-                    field[futurefield[0]][futurefield[1]] = field[currentfield[0]][currentfield[1]];
-                    field[currentfield[0]][currentfield[1]] = wab[currentfield[0]][currentfield[1]];
-                } else {
-                    message.channel.send("STOP RIGHT THERE YOU CRIMMINAL SCUM moved true bw black")
-                }
-            } else {
-                message.channel.send("STOP RIGHT THERE YOU CRIMMINAL SCUM moved true black")
-            }
-        } else {
-            if (field[futurefield[0]][futurefield[1]] == w || field[futurefield[0]][futurefield[1]] == b) {
-                if (currentfield[0] - futurefield[0] == 2 || currentfield[0] - futurefield[0] == 1) {
-                    console.log("Inside 2 or 1 wp");
-                    field[futurefield[0]][futurefield[1]] = field[currentfield[0]][currentfield[1]];
-                    field[currentfield[0]][currentfield[1]] = wab[currentfield[0]][currentfield[1]];
-                } else {
-                    message.channel.send("STOP RIGHT THERE YOU CRIMMINAL SCUM moved true bw black")
-                }
-            } else {
-                message.channel.send("STOP RIGHT THERE YOU CRIMMINAL SCUM /")
-            }
-        }
-    }
-
-
-}
+//TODO: Fix canibalism among us (sus) same coloured pawns (a7 eats a6 black )
+//Pawns are heawy knees weak arms are heavy there vomit on my sweater already moms spagheti
 
 // WHITE PAWN: if currentpos  y+1 x+1 OR y+ x-1 != w or b -> you can eat
 // BLACK PAWN: if currentpos y-1 x+1 OR y-1 x-1 != w or b -> you can eat
@@ -305,46 +247,230 @@ function pawn(field, currentfield, futurefield, message) {
 // + 10/6 - 10/6   + 15/17 -15/17
 // dishop: can move in diagonal() + 9/7 - 9/7
 // rook: can move in cross() +8,16,24,32,40,48,56,64  +1,2,3,4,5,6,7,8 -1,2,3,4,5,6,7,8 -8,16,24,32,40,48,56,64
+function replace(field, x, y, fx, fy) {
 
-function bishop(field, currentfield, futurefield, message) {
 
 }
 
-function rook(field, currentfield, futurefield, message) {
+function whitepawn(field, message, x, y, fx, fy) {
+    console.log(field[fx])
+    console.log("Current Field" + field[y][x]);
+    let moved = false;
+    if (y != 1) {
+        moved = true
+    }
+    if (moved == true) {
+        //   
+        if (fy - y == 1) {
 
-}
-function queen(field, currentfield, futurefield, message) {
-
-}
-
-
-function knight(field, currentfield, futurefield, message) {
-    if (field[currentfield[0]][currentfield[1]] == wn || field[currentfield[0]][currentfield[1]] == bn) {
-        if (futurefield[0] - currentfield[0] == 2 || currentfield[0] - futurefield[0] == 2) {
-            //futurefield[0] = y 
-            if (futurefield[1] - currentfield[1] == 1 || currentfield[1] - futurefield[1] == 1) {
-                console.log("LINE 312");
-                canibalism(field, currentfield, futurefield, message);
-
-            } else {
-                message.channel.send('SCUMBAG GO DO RIGHT TURN L IDIOT')
+            //replace(field);
+            if (fx - x > 0 || fx - x < 0) {
+                if (field[y + 1][x + 1] != w || field[y + 1][x - 1] != w || field[y + 1][x + 1] != b || field[y + 1][x - 1] != b) {
+                    let moving = fx - x
+                    canibalism(field, message, x, y, fx, fy, moving);
+                }
             }
-        }
-    } else if (futurefield[1] - currentfield[1] == 2 || currentfield[1] - futurefield[1] == 2) {
-        if (futurefield[0] - currentfield[0] == 1 || currentfield[0] - futurefield[0] == 1) {
-            console.log("LINE 321");
-            canibalism(field, currentfield, futurefield, message);
 
+            else if (field[fy][fx] == w || field[fy][fx] == b) {
+                field[fy][fx] = field[y][x];
+                field[y][x] = wab[y][x];
+            }
+            // do the or thingy so that the user cant type -x or 0
+            console.log("Success");
         } else {
-            console.log('')
-            // KNIGHT GOES 2 front or back then one left or right idiot @alex
-            message.channel.send('SCUMBG GO DO RIGHT TURN L IDIOT')
+            message.channel.send("Not a Valid Move")
+        }
+    } else {
+        if (fy - y == 2 || fy - y == 1) {
+            //replace(field);
+            console.log("Future field" + field[fy][fx])
+            if (field[y + 1][x + 1] != w || field[y + 1][x - 1] != w || field[y + 1][x + 1] != b || field[y + 1][x - 1] != b) {
+                let moving = fx - x;
+                field[fy][x + moving] = field[y][x];
+                field[y][x] = wab[y][x];
+            }
+            else if (field[fy][fx] == w || field[fy][fx] == b) {
+                //stöp stöp
+                field[fy][fx] = field[y][x];
+                field[y][x] = wab[y][x];
+                console.log('Success')
+            } else {
+                message.channel.send("Not a Valid Move")
+            }
+            // do the or thingy so that the user cant type -x or 0
+        }
+        else {
+            message.channel.send("Non Non madame, c'est ne pas possible")
+        }
+    }
+}
+function blackpawn(field, message, x, y, fx, fy) {
+    console.log("Current Field" + field[y][x]);
+    let moved = false;
+    if (y != 6) {
+        moved = true
+    }
+    if (moved == true) {
+        //   
+        if (y - fy == 1) {
+
+            //replace(field);
+            if (fx - x > 0 || fx - x < 0) {
+                if (field[y - 1][x + 1] != w || field[y - 1][x - 1] != w || field[y - 1][x + 1] != b || field[y - 1][x - 1] != b) {
+                    let moving = fx - x
+                    canibalism(field, message, x, y, fx, fy, moving);
+                }
+            }
+
+            else if (field[fy][fx] == w || field[fy][fx] == b) {
+            canibalism(field,message, x,y,fx,fy,0)
+            }
+            // do the or thingy so that the user cant type -x or 0
+            console.log("Success");
+        } else {
+            message.channel.send("Not a Valid Move")
+        }
+    } else {
+        if (y - fy == 2 || y - fy == 1) {
+            //replace(field);
+            console.log("Future field" + field[fy][fx])
+            if (field[y - 1][x + 1] != w || field[y - 1][x - 1] != w || field[y - 1][x + 1] != b || field[y - 1][x - 1] != b) {
+                let moving = fx - x;
+                canibalism(field,message, x,y,fx,fy,moving);
+            }
+            else if (field[fy][fx] == w || field[fy][fx] == b) {
+                //stöp stöp
+                canibalism(field,message,x,y,fx,fy, 0)
+                console.log('Success')
+            } else {
+                message.channel.send("Not a Valid Move")
+            }
+            // do the or thingy so that the user cant type -x or 0
+        }
+        else {
+            message.channel.send("Non Non madame, ca'est ne pas possible")
         }
     }
 }
 
+function bishop(field, message, x, y, fx, fy) {
+    let counts
+    if (fy < y) {
+        counts = y - fy
+        for (let i = 0; i < counts; i++) {
+            if (field[y + 1][x + 1] != w || field[y + 1][x - 1] != w || field[y + 1][x + 1] != b || field[y + 1][x - 1] != b) {
+                let moving = fx - x;
+                canibalism(field, message, x, y, fx, fy);
+            }
+        }
+    }
+    else if (fy > y) {
+        counts = fy - y
+        for (let i = 0; i < counts; i++) {
+            if (fx - x > 0 || fx - x < 0) {
+                if (field[y - 1][x + 1] != w || field[y - 1][x - 1] != w || field[y - 1][x + 1] != b || field[y - 1][x - 1] != b) {
+                    let moving = fx - x
+                    canibalism(field, message, x, y, fx, fy, moving);
+                }
+            }
+        }
+    }
+}
 
-function canibalism(field, currentfield, futurefield, message) {
+//TODO: DETECT COOM
+function rook(field, message, x, y, fx, fy) {
+    let vertical = false
+    let horizontal = false
+    let repetitions = 0
+    if (field[y][x] == wr || field[y][x] == br) {
+        if (fx - x >= 1 || fy - y >= 1 || fx - x <= -1 || fy - y <= -1) {
+            if (x == fx) {
+                vertical = true;
+                repetitions = fy - y
+            }
+            else if (y == fy) {
+                horizontal = true
+                repetitions = fx - x
+            }
+            console.log(repetitions)
+            if (horizontal) {
+                console.log('hello')
+            }
+            /*
+            for(let i = 0; DETECTED == false; i++) {
+                if(field[x][y+i] != w || field[x][y+i] != b) {
+                    detected = true; 
+                }
+            }
+
+            for(let i = 0; DETECTED == false; i++) {
+                if(field[x+i][y] != w || field[x+i][y] != b) {
+                    detected = true; 
+                }
+            }
+
+            for(let i = 0; DETECTED == false; i--) {
+                if(field[x][y+i] != w || field[x][y+i] != b) {
+                    detected = true; 
+                }
+            }
+
+            for(let i = 0; DETECTED == false; i--) {
+                if(field[x+i][y] != w || field[x+i][y] != b) {
+                    detected = true; 
+                }
+            }
+            */
+        }
+    }
+}
+
+function queen(field, message, x, y, fx, fy) {
+
+}
+
+
+function knight(field, message, x, y, fx, fy) {
+
+    if (fx - x == 2 || x - fx == 2) {
+        //fx = y 
+        if (fy - y == 1 || y - fy == 1) {
+            console.log("LINE 312 lol");
+            canibalism(field, message, x, y, fx, fy, 0)
+        } else {
+            message.channel.send('SCUMBAG GO DO RIGHT TURN L IDIOT')
+        }
+    } else if (fy - y == 2 || y - fy == 2) {
+        if (fx - x == 1 || x - fx == 1) {
+            console.log("LINE 321");
+            canibalism(field, message, x, y, fx, fy, 0)
+        } else {
+            console.log('')
+            // KNIGHT GOES 2 front or back then one left or right idiot @alex
+            message.channel.send('SCUMBAG GO DO RIGHT TURN L IDIOT')
+        }
+    }
+    if (fx + x == 2 || x + fx == 2) {
+        //fx = y 
+        if (fy - y == 1 || y - fy == 1) {
+            console.log("LINE 312 lol");
+            canibalism(field, message, x, y, fx, fy, 0)
+        } else {
+            message.channel.send('SCUMBAG GO DO RIGHT TURN L IDIOT')
+        }
+    } else if (fy + y == 2 || y + fy == 2) {
+        if (fx - x == 1 || x - fx == 1) {
+            console.log("LINE 321");
+            canibalism(field, message, x, y, fx, fy, 0)
+        } else {
+            console.log('')
+            // KNIGHT GOES 2 front or back then one left or right idiot @alex
+            message.channel.send('SCUMBAG GO DO RIGHT TURN L IDIOT')
+        }
+    }
+}
+
+function canibalism(field, message, x, y, fx, fy, moving) {
     let white = false;
     let black = false;
     let detected = false;
@@ -352,13 +478,14 @@ function canibalism(field, currentfield, futurefield, message) {
 
     for (let element of blackPawns) {
         console.log("asfasdfasdfasdasdasd");
-        console.log(element, "-elemnt and ", field[currentfield[0]][currentfield[1]])
-        if (field[currentfield[0]][currentfield[1]] == element) {
+        console.log(element, "-elemnt and ", field[y][x])
+        if (field[y][x] == element) {
             black = true;
             console.log("it is the black")
             for (let thing of blackPawns) {
-                console.log(thing + " COMPARET TO FIELD: " + field[futurefield[0]][futurefield[1]]);
-                if (field[futurefield[0]][futurefield[1]] == thing) {
+                console.log(thing + " COMPARET TO FIELD: " + field[fy][fx]);
+                console.log("IS IT DETECTED" + detected);
+                if (field[fy][fx] == thing) {
                     message.channel.send("NO CANIBALISM ALLOWED HERE (black pawns)");
                     detected = true;
                     break;
@@ -375,24 +502,32 @@ function canibalism(field, currentfield, futurefield, message) {
 
     if (white == true) {
         for (let element of whitePawns) {
-            if (field[futurefield[0]][futurefield[1]] == element) {
+            if (field[fy][fx] == element) {
                 message.channel.send("NO CANIBALISM ALLOWED HERE");
                 detected = true;
                 break;
             }
         }
         console.log("THIS IS DETECTED: ", detected);
-        if (detected == false) {
-            console.log("worked white");
-            field[futurefield[0]][futurefield[1]] = field[currentfield[0]][currentfield[1]]
+
+    }
+    if (detected == false) {
+        //console.log("worked white");
+        //field[fy][fx] = field[y][x]
+        if (moving == 0) {
             message.channel.send("POGGERS");
-            field[currentfield[0]][currentfield[1]] = wab[currentfield[0]][currentfield[1]]
-            message.channel.send("VANISHED");
-            message.channel.send(getFormatedField());
+            field[fy][fx] = field[y][x]; //TODO: FIX  THE MOVING SHITE AMOUGS
+            field[y][x] = wab[y][x];
+        } else {
+            field[fy][x + moving] = field[y][x]; //TODO: FIX  THE MOVING SHITE AMOUGS
+            field[y][x] = wab[y][x];
         }
+        //field[y][x] = wab[y][x]
+        //message.channel.send("VANISHED");
+        //*message.channel.send(getFormatedField());
     }
 }
 
 
 
-client.login(config.BOT_TOKEN);
+client.login(config.BOT_TOKEN)
