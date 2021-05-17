@@ -189,9 +189,8 @@ client.on("message", function (message) {
                             return
                         }
 
-                        //FUNCTIONS FOR PAWN //when yves (Real name if) is sus
+                        //FUNCTIONS FOR PAWN 
                         const figure = field[y][x]
-                        //const color = str.slice
                         switch (field[y][x]) {
                             case wp:
                                 console.log("Pawnw selected");
@@ -243,7 +242,7 @@ client.on("message", function (message) {
 
 // WHITE PAWN: if currentpos  y+1 x+1 OR y+ x-1 != w or b -> you can eat
 // BLACK PAWN: if currentpos y-1 x+1 OR y-1 x-1 != w or b -> you can eat
-// TODO: knight: can move in L or in cappital Gamma (Γ)
+// TODO: knight: can move in L or in cappital Gamm^lsq (Γ)
 // + 10/6 - 10/6   + 15/17 -15/17
 // dishop: can move in diagonal() + 9/7 - 9/7
 // rook: can move in cross() +8,16,24,32,40,48,56,64  +1,2,3,4,5,6,7,8 -1,2,3,4,5,6,7,8 -8,16,24,32,40,48,56,64
@@ -377,7 +376,6 @@ function bishop(field, message, x, y, fx, fy) {
     }
 }
 
-//TODO: DETECT COOM
 function rook(field, message, x, y, fx, fy) {
     let vertical = false
     let horizontal = false
