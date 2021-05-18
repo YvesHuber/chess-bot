@@ -1,6 +1,3 @@
-const { count } = require("console");
-const { Collection } = require("discord.js");
-
 Discord = require("discord.js");
 config = require("../config.json");
 client = new Discord.Client();
@@ -101,157 +98,178 @@ client.on("message", function (message) {
 
         const challenger = message.author
         const duelist = message.mentions.members.first()
+        console.log(challenger.username)
+        console.log(duelist)
 
-
-
+        message.channel.send(getFormatedField())
         round(field, challenger, duelist)
         function round(field, challenger, duelist) {
-            message.channel.send(getFormatedField())
-
+            let turncount = 0
             try {
-                client.on('message', message => {
-                    if (message.author.bot) return;
-                    if (message.content != "") {
-                        if (message.author.id == challenger.id)
-                            turn = message.content.split(" ")
-
-                        function fieldchooser(row, number) {
-                            let currentPos = new Object();
-                            index = 0
-                            //dabaddby
-                            switch (row) {
-                                case 'a':
-                                    // field[y][0]
-                                    currentPos[0] = number - 1;
-                                    currentPos[1] = 0;
-                                    return currentPos;
-                                case 'b':
-                                    // field[y][1]
-                                    currentPos[0] = number - 1;
-                                    currentPos[1] = 1;
-                                    return currentPos;
-                                case 'c':
-                                    // field[y][2]
-                                    currentPos[0] = number - 1;
-                                    currentPos[1] = 2;
-                                    return currentPos;
-                                case 'd':
-                                    // field[y][3]
-                                    currentPos[0] = number - 1;
-                                    currentPos[1] = 3;
-                                    return currentPos;
-                                case 'e':
-                                    // field[y][4]
-                                    currentPos[0] = number - 1;
-                                    currentPos[1] = 4;
-                                    return currentPos;
-                                case 'f':
-                                    //field[y][5]
-                                    currentPos[0] = number - 1;
-                                    currentPos[1] = 5;
-                                    return currentPos;
-                                case 'g':
-                                    // field[y][6]
-                                    currentPos[0] = number - 1;
-                                    currentPos[1] = 6;
-                                    return currentPos;
-                                case 'h':
-                                    // field[y][7]
-                                    currentPos[0] = number - 1;
-                                    currentPos[1] = 7;
-                                    return currentPos;
+                try {
+                    client.on('message', message => {
+                        if (message.author.bot) return;
+                        if (message.content != "") {
+                            if (message.author.id == challenger.id && turncount == 0) {
+                            turncount = 1
+                            let turnchall = message.content.split(" ")
+                            turn(turnchall)
+                            message.channel.send("Turn 1 over")
+                            }
+                            else if (message.author.id === duelist.id && turncount == 1) {
+                            turncount = 0
+                            console.log("your turn " + duelist.username)
+                            let turnduel = message.content.split(" ")
+                            turn(turnduel)
+                            }
+                            else {
+                                message.channel.send("its not your Turn yet")
+                            return
                             }
                         }
-                        try {
-                            currentrow = turn[0].slice(0, 1)
-                            currentnum = turn[0].slice(1, 2)
-                            futuretrow = turn[1].slice(0, 1)
+                    }); //poggers
+                } catch (error) {
 
-                            console.log("DA POLICE" + turn[0])
-                            futurenum = turn[1].slice(1, 2)
-                        }
-                        catch (err) {
-                            message.channel.send("Please only enter in this format <b1 b2>")
-                            return
-                        }
-                        let hasMoved = false;
-                        console.log("futureRow" + futuretrow + "futurenum" + futurenum);
-                        currentfield = fieldchooser(currentrow, currentnum);
-                        futurefield = fieldchooser(futuretrow, futurenum);
-                        let y = currentfield[0]; // should actually be y 
-                        let x = currentfield[1]; // should actually be x
-                        //Future
-                        let fy = futurefield[0];// should actually be fy 
-                        let fx = futurefield[1];// should actually be fx
-                        console.log("current Index", currentfield, "future Index", futurefield)
-                        if (field[y][x] == w || field[y][x] == b) {
-                            message.channel.send("No Valid Move")
-                            return
-                        }
-
-                        //FUNCTIONS FOR PAWN 
-                        const figure = field[y][x]
-                        switch (field[y][x]) {
-                            case wp:
-                                console.log("Pawnw selected");
-                                //pawn(field, message,x,y,fx,fy);
-                                whitepawn(field, message, x, y, fx, fy);
-                                message.channel.send(getFormatedField());
-                                break
-                            case bp:
-                                console.log("Pawn selected")
-                                blackpawn(field, message, x, y, fx, fy);
-                                message.channel.send(getFormatedField())
-                                break; //coomer detected
-                            case bb:
-                                console.log("bishop selected")
-                                bishop(field, message, x, y, fx, fy);
-                                message.channel.send(getFormatedField())
-                                break; //coomer detected
-
-                            case wb:
-                                console.log("bishop selected")
-                                bishop(field, message, x, y, fx, fy);
-                                message.channel.send(getFormatedField())
-                                break; //coomer detected
-
-                            case bn: // I AM RETARDED @everyone
-                                console.log("KNIGHT SELECTED");
-                                knight(field, message, x, y, fx, fy);
-                                message.channel.send(getFormatedField());
-                                break;
-                            case wn: // I AM RETARDED @everyone
-                                console.log("KNIGHT SELECTED");
-                                knight(field, message, x, y, fx, fy);
-                                message.channel.send(getFormatedField())
-                                break;
-                            case wk:
-                                console.log("White King");
-                                king(field, message, x, y, fx, fy);
-                                message.channel.send(getFormatedField())
-                                break;
-
-                            case bk:
-                                console.log("Black King");
-                                king(field, message, x, y, fx, fy);
-                                message.channel.send(getFormatedField())
-                                break;
-                            case br:
-                                console.log("Black Rook");
-                                rook(field, message, x, y, fx, fy);
-                                message.channel.send(getFormatedField())
-                                break;
-
-                            case wr:
-                                console.log("White Rook");
-                                rook(field, message, x, y, fx, fy);
-                                message.channel.send(getFormatedField())
-                                break;
-
-
+                }
+                function turn(turn) {
+                    function fieldchooser(row, number) {
+                        let currentPos = new Object();
+                        index = 0
+                        //dabaddby
+                        switch (row) {
+                            case 'a':
+                                // field[y][0]
+                                currentPos[0] = number - 1;
+                                currentPos[1] = 0;
+                                return currentPos;
+                            case 'b':
+                                // field[y][1]
+                                currentPos[0] = number - 1;
+                                currentPos[1] = 1;
+                                return currentPos;
+                            case 'c':
+                                // field[y][2]
+                                currentPos[0] = number - 1;
+                                currentPos[1] = 2;
+                                return currentPos;
+                            case 'd':
+                                // field[y][3]
+                                currentPos[0] = number - 1;
+                                currentPos[1] = 3;
+                                return currentPos;
+                            case 'e':
+                                // field[y][4]
+                                currentPos[0] = number - 1;
+                                currentPos[1] = 4;
+                                return currentPos;
+                            case 'f':
+                                //field[y][5]
+                                currentPos[0] = number - 1;
+                                currentPos[1] = 5;
+                                return currentPos;
+                            case 'g':
+                                // field[y][6]
+                                currentPos[0] = number - 1;
+                                currentPos[1] = 6;
+                                return currentPos;
+                            case 'h':
+                                // field[y][7]
+                                currentPos[0] = number - 1;
+                                currentPos[1] = 7;
+                                return currentPos;
                         }
                     }
-                });
+                    try {
+                        currentrow = turn[0].slice(0, 1)
+                        currentnum = turn[0].slice(1, 2)
+                        futuretrow = turn[1].slice(0, 1)
+
+                        console.log("DA POLICE" + turn[0])
+                        futurenum = turn[1].slice(1, 2)
+                    }
+                    catch (err) {
+                        message.channel.send("Please only enter in this format <b1 b2>")
+                        return
+                    }
+                    currentfield = fieldchooser(currentrow, currentnum);
+                    futurefield = fieldchooser(futuretrow, futurenum);
+                    let y = currentfield[0]; // should actually be y 
+                    let x = currentfield[1]; // should actually be x
+                    //Future
+                    let fy = futurefield[0];// should actually be fy 
+                    let fx = futurefield[1];// should actually be fx
+                    console.log("current Index", currentfield, "future Index", futurefield)
+                    if (field[y][x] == w || field[y][x] == b) {
+                        message.channel.send("No Valid Move")
+                        return
+                    }
+
+                    //FUNCTIONS FOR PAWN 
+                    const figure = field[y][x]
+                    switch (field[y][x]) {
+                        case wp:
+                            console.log("Pawnw selected");
+                            //pawn(field, message,x,y,fx,fy);
+                            whitepawn(field, message, x, y, fx, fy);
+                            message.channel.send(getFormatedField());
+                            break
+                        case bp:
+                            console.log("Pawn selected")
+                            blackpawn(field, message, x, y, fx, fy);
+                            message.channel.send(getFormatedField())
+                            break; //coomer detected
+                        case bb:
+                            console.log("bishop selected")
+                            bishop(field, message, x, y, fx, fy);
+                            message.channel.send(getFormatedField())
+                            break; //coomer detected
+                        case wb:
+                            console.log("bishop selected")
+                            bishop(field, message, x, y, fx, fy);
+                            message.channel.send(getFormatedField())
+                            break; //coomer detected
+                        case bn: // I AM RETARDED @everyone
+                            console.log("KNIGHT SELECTED");
+                            knight(field, message, x, y, fx, fy);
+                            message.channel.send(getFormatedField());
+                            break;
+                        case wn: // I AM RETARDED @everyone
+                            console.log("KNIGHT SELECTED");
+                            knight(field, message, x, y, fx, fy);
+                            message.channel.send(getFormatedField())
+                            break;
+                        case wk:
+                            console.log("White King");
+                            king(field, message, x, y, fx, fy);
+                            message.channel.send(getFormatedField())
+                            break;
+                        case bk:
+                            console.log("Black King");
+                            king(field, message, x, y, fx, fy);
+                            message.channel.send(getFormatedField())
+                            break;
+                        case br:
+                            console.log("Black Rook");
+                            rook(field, message, x, y, fx, fy);
+                            message.channel.send(getFormatedField())
+                            break;
+                        case wr:
+                            console.log("White Rook");
+                            rook(field, message, x, y, fx, fy);
+                            message.channel.send(getFormatedField())
+                            break;
+                        case bq:
+                            console.log("Black Queen")
+                            queen(field, message, x, y, fx, fy)
+                            message.channel.send(getFormatedField())
+                            break;
+                        case wq:
+                            console.log("White Queen")
+                            queen(field, message, x, y, fx, fy)
+                            message.channel.send(getFormatedField())
+                            break;
+                    }
+                }
             } catch (err) {
                 message.channel.send("Please only enter in this format <b1 b2>")
             }
@@ -259,15 +277,6 @@ client.on("message", function (message) {
     }
 })
 
-//TODO: Fix canibalism among us (sus) same coloured pawns (a7 eats a6 black )
-//Pawns are heawy knees weak arms are heavy there vomit on my sweater already moms spagheti
-
-// WHITE PAWN: if currentpos  y+1 x+1 OR y+ x-1 != w or b -> you can eat
-// BLACK PAWN: if currentpos y-1 x+1 OR y-1 x-1 != w or b -> you can eat
-// TODO: knight: can move in L or in cappital Gamm^lsq (Γ)
-// + 10/6 - 10/6   + 15/17 -15/17
-// dishop: can move in diagonal() + 9/7 - 9/7
-// rook: can move in cross() +8,16,24,32,40,48,56,64  +1,2,3,4,5,6,7,8 -1,2,3,4,5,6,7,8 -8,16,24,32,40,48,56,64
 function king(field, message, x, y, fx, fy) {
     if (fx + 1 == x || fx == x || fx - 1 == x) {
         if (fy + 1 == y || fy == y || fy - 1 == y) {
@@ -453,7 +462,6 @@ function bishop(field, message, x, y, fx, fy) {
     }
 }
 
-
 function rook(field, message, x, y, fx, fy) {
     if (fx - x >= 1 || fy - y >= 1 || fx - x <= -1 || fy - y <= -1) {
         if (fx - x > 0) {
@@ -470,7 +478,7 @@ function rook(field, message, x, y, fx, fy) {
             for (i = 1; i < x - fx; i++) {
                 if (field[y][x - i] == w || field[y][x - i] == b) {
                     posx--
-                } 
+                }
             }
 
             canibalism(field, message, x, y, parseInt(x + posx), y, 0)
@@ -487,19 +495,16 @@ function rook(field, message, x, y, fx, fy) {
             for (i = 1; i < y - fy; i++) {
                 if (field[y - i][x] == w || field[y - i][x] == b) {
                     posy--
-                } 
+                }
             }
             canibalism(field, message, x, y, x, parseInt(y + posy), 0)
         }
     }
 }
 
-
-
 function queen(field, message, x, y, fx, fy) {
 
 }
-
 
 function knight(field, message, x, y, fx, fy) {
 
