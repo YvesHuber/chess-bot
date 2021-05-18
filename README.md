@@ -1,8 +1,11 @@
-# EDAJ-BOT
+# Chess Bot
 This is a discord bot made with Node js
 
 you can use and customise this bot as you like.
 
-You first have to add a Twitch Token (from tmi.js) and a Disocrd Bot Token (from discord. dev)
+Get your discord bot Token From https://discord.com/developers/applications
 
-once added in .env and package.json you can Start index.js with Node and invite the Bot into your server
+Make a new Programm and add it to the config.json
+Then start the Bot with Node
+
+Have fun 
