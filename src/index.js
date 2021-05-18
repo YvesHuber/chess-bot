@@ -218,15 +218,37 @@ client.on("message", function (message) {
                             case bn: // I AM RETARDED @everyone
                                 console.log("KNIGHT SELECTED");
                                 knight(field, message, x, y, fx, fy);
-                                console.log("went through function");
                                 message.channel.send(getFormatedField());
                                 break;
                             case wn: // I AM RETARDED @everyone
                                 console.log("KNIGHT SELECTED");
                                 knight(field, message, x, y, fx, fy);
-                                console.log("went through function");
                                 message.channel.send(getFormatedField())
                                 break;
+                            case wk:
+                                console.log("White King");
+                                king(field, message, x, y, fx, fy);
+                                message.channel.send(getFormatedField())
+                                break;
+
+                            case bk:
+                                console.log("Black King");
+                                king(field, message, x, y, fx, fy);
+                                message.channel.send(getFormatedField())
+                                break;
+                            case br:
+                                console.log("Black Rook");
+                                rook(field, message, x, y, fx, fy);
+                                message.channel.send(getFormatedField())
+                                break;
+
+                            case wr:
+                                console.log("White Rook");
+                                rook(field, message, x, y, fx, fy);
+                                message.channel.send(getFormatedField())
+                                break;
+
+
                         }
                     }
                 });
@@ -246,9 +268,12 @@ client.on("message", function (message) {
 // + 10/6 - 10/6   + 15/17 -15/17
 // dishop: can move in diagonal() + 9/7 - 9/7
 // rook: can move in cross() +8,16,24,32,40,48,56,64  +1,2,3,4,5,6,7,8 -1,2,3,4,5,6,7,8 -8,16,24,32,40,48,56,64
-function replace(field, x, y, fx, fy) {
-
-
+function king(field, message, x, y, fx, fy) {
+    if (fx + 1 == x || fx == x || fx - 1 == x) {
+        if (fy + 1 == y || fy == y || fy - 1 == y) {
+            canibalism(field, message, x, y, fx, fy, 0)
+        }
+    }
 }
 
 function whitepawn(field, message, x, y, fx, fy) {
@@ -322,7 +347,7 @@ function blackpawn(field, message, x, y, fx, fy) {
             }
 
             else if (field[fy][fx] == w || field[fy][fx] == b) {
-            canibalism(field,message, x,y,fx,fy,0)
+                canibalism(field, message, x, y, fx, fy, 0)
             }
             // do the or thingy so that the user cant type -x or 0
             console.log("Success");
@@ -335,11 +360,11 @@ function blackpawn(field, message, x, y, fx, fy) {
             console.log("Future field" + field[fy][fx])
             if (field[y - 1][x + 1] != w || field[y - 1][x - 1] != w || field[y - 1][x + 1] != b || field[y - 1][x - 1] != b) {
                 let moving = fx - x;
-                canibalism(field,message, x,y,fx,fy,moving);
+                canibalism(field, message, x, y, fx, fy, moving);
             }
             else if (field[fy][fx] == w || field[fy][fx] == b) {
                 //stöp stöp
-                canibalism(field,message,x,y,fx,fy, 0)
+                canibalism(field, message, x, y, fx, fy, 0)
                 console.log('Success')
             } else {
                 message.channel.send("Not a Valid Move")
@@ -356,125 +381,120 @@ function bishop(field, message, x, y, fx, fy) {
     if (fx - x < 0 && fy - y < 0) {
         console.log("You are Left Up")
         //Links Up
-        let posx = -1 
+        let posx = -1
         let posy = -1
-        
-        for (i = 1;i < x - fx; i++) {
-            console.log(field [y-i][x+i])
-            if (field [y - i][x - i] == w || field[y - i][x - i] == b ) {
+
+        for (i = 1; i < x - fx; i++) {
+            console.log(field[y - i][x + i])
+            if (field[y - i][x - i] == w || field[y - i][x - i] == b) {
                 posx--
                 posy--
-                
+
             } else {
                 return
             }
 
         }
-        canibalism(field,message,x,y,parseInt(x + posx),parseInt(y + posy),0)
+        canibalism(field, message, x, y, parseInt(x + posx), parseInt(y + posy), 0)
     }
     else if (fx - x < 0 && fy - y > 0) {
         console.log("You are Left Down")
         //Links Down
-        let posx = -1 
+        let posx = -1
         let posy = 1
-        
-        for (i = 1;i < x - fx; i++) {
-            if (field [y + i][x - i] == w || field[y + i][x - i] == b ) {
+
+        for (i = 1; i < x - fx; i++) {
+            if (field[y + i][x - i] == w || field[y + i][x - i] == b) {
                 posx--
                 posy++
-                
+
             } else {
                 return
             }
 
         }
-        canibalism(field,message,x,y,parseInt(x + posx),parseInt(y + posy),0)
+        canibalism(field, message, x, y, parseInt(x + posx), parseInt(y + posy), 0)
     }
     else if (fx - x > 0 && fy - y > 0) {
         console.log("You are Right Down")
         //Rechts Unten
-        let posx = 1 
+        let posx = 1
         let posy = 1
-        
-        for (i = 1;i < fx - x; i++) {
-            if (field [y + i][x + i] == w || field[y + i][x + i] == b ) {
+
+        for (i = 1; i < fx - x; i++) {
+            if (field[y + i][x + i] == w || field[y + i][x + i] == b) {
                 posx++
                 posy++
-                
+
             } else {
                 return
             }
 
         }
-        canibalism(field,message,x,y,parseInt(x + posx),parseInt(y + posy),0)
+        canibalism(field, message, x, y, parseInt(x + posx), parseInt(y + posy), 0)
     }
     else if (fx - x > 0 && fy - y < 0) {
         console.log("You are Right Up")
         //Rechts Oben
-        let posx = 1 
+        let posx = 1
         let posy = -1
-        
-        for (i = 1;i < fx - x; i++) {
-            if (field [y - i][x + i] == w || field[y - i][x + i] == b ) {
+
+        for (i = 1; i < fx - x; i++) {
+            if (field[y - i][x + i] == w || field[y - i][x + i] == b) {
                 posx++
                 posy--
-                
+
             } else {
                 return
             }
 
         }
-        canibalism(field,message,x,y,parseInt(x + posx),parseInt(y + posy),0)
+        canibalism(field, message, x, y, parseInt(x + posx), parseInt(y + posy), 0)
     }
 }
 
 
 function rook(field, message, x, y, fx, fy) {
-    let vertical = false
-    let horizontal = false
-    let repetitions = 0
-    if (field[y][x] == wr || field[y][x] == br) {
-        if (fx - x >= 1 || fy - y >= 1 || fx - x <= -1 || fy - y <= -1) {
-            if (x == fx) {
-                vertical = true;
-                repetitions = fy - y
-            }
-            else if (y == fy) {
-                horizontal = true
-                repetitions = fx - x
-            }
-            console.log(repetitions)
-            if (horizontal) {
-                console.log('hello')
-            }
-            /*
-            for(let i = 0; DETECTED == false; i++) {
-                if(field[x][y+i] != w || field[x][y+i] != b) {
-                    detected = true; 
+    if (fx - x >= 1 || fy - y >= 1 || fx - x <= -1 || fy - y <= -1) {
+        if (fx - x > 0) {
+            let posx = 1
+
+            for (i = 1; i < fx - x; i++) {
+                if (field[y][x + i] == w || field[y][x + i] == b) {
+                    posx++
                 }
+            }
+            canibalism(field, message, x, y, parseInt(x + posx), y, 0)
+        } else if (fx - x < 0) {
+            let posx = -1
+            for (i = 1; i < x - fx; i++) {
+                if (field[y][x - i] == w || field[y][x - i] == b) {
+                    posx--
+                } 
             }
 
-            for(let i = 0; DETECTED == false; i++) {
-                if(field[x+i][y] != w || field[x+i][y] != b) {
-                    detected = true; 
+            canibalism(field, message, x, y, parseInt(x + posx), y, 0)
+        } else if (fy - y > 0) {
+            let posy = 1
+            for (i = 1; i < fy - y; i++) {
+                if (field[y + i][x] == w || field[y + i][x] == b) {
+                    posy++
                 }
             }
-
-            for(let i = 0; DETECTED == false; i--) {
-                if(field[x][y+i] != w || field[x][y+i] != b) {
-                    detected = true; 
-                }
+            canibalism(field, message, x, y, x, parseInt(y + posy), 0)
+        } else if (fy - y < 0) {
+            let posy = -1
+            for (i = 1; i < y - fy; i++) {
+                if (field[y - i][x] == w || field[y - i][x] == b) {
+                    posy--
+                } 
             }
-
-            for(let i = 0; DETECTED == false; i--) {
-                if(field[x+i][y] != w || field[x+i][y] != b) {
-                    detected = true; 
-                }
-            }
-            */
+            canibalism(field, message, x, y, x, parseInt(y + posy), 0)
         }
     }
 }
+
+
 
 function queen(field, message, x, y, fx, fy) {
 
@@ -533,7 +553,7 @@ function canibalism(field, message, x, y, fx, fy, moving) {
             black = true;
             console.log("it is the black")
             for (let thing of blackPawns) {
-                console.log(thing +  " COMPARET TO FIELD: " + field[fy][fx]);
+                console.log(thing + " COMPARET TO FIELD: " + field[fy][fx]);
                 console.log("IS IT DETECTED" + detected);
                 if (field[fy][fx] == thing) {
                     message.channel.send("NO CANIBALISM ALLOWED HERE (black pawns)");
