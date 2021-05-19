@@ -1,22 +1,3 @@
-/*TODO: 
-Stop right there Criminal Scum! Nobody breaks the law on my watch!
-
-I'm confiscating your stolen goods. Now pay your fine or it's off to jail.
-
--
-
-It's all over, lawbreaker! Your spree is at an end. I'll take any stolen
-
-goods you have. The next move is yours -- Pay your fine, or I haul you
-
-away!
-
--
-
-Stop, you’ve violated the law, pay the court of fine or serve your
-
-sentence, your stolen goods are now forfeit!
-*/
 const { TextBasedChannel } = require("discord.js");
 const { mainModule } = require("process");
 
@@ -73,22 +54,30 @@ const blackPawns = [
 const whitePawns = [
     wp, wr, wn, wb, wq, wk
 ]
+i = 0;
 
 //makes field
 function getFormatedField() {
-    let formatedfield = "";
+    let formatedfield = "  ";
 
     field.forEach(value => {
-        formatedfield += "\n";
+        
+        if(i == 0) {
+            formatedfield +="\n " ;
+        } else {
+            formatedfield +=  "   " + i + "\n " ;
+        }
+        i++;
+        
         value.forEach(element => {
             formatedfield += element;
         })
     });
-    return formatedfield;
+    return formatedfield + "   " + i + "\n   a    b    c    d    e    f    g    h";
 }
 client.on("message", function (message) {
 
-    client.user.setActivity("with GF Dad", {
+    client.user.setActivity("with Dimi THE god", {
         type: "STREAMING",
         url: "https://github.com/YvesHuber/chess-bot"
     });
@@ -114,6 +103,9 @@ client.on("message", function (message) {
         const timeTaken = Date.now() - message.createdTimestamp;
         message.reply(`Pong! This message had a latency of ${timeTaken}ms.`);
     }
+    else if (command === "steiner") {
+        message.channel.send("Hallo Diego");
+    }
 
 
     else if (command === 'chess') {
@@ -127,7 +119,7 @@ client.on("message", function (message) {
             message.channel.send("No member was mentiond")
             return
         }
-
+        i = 0;
         message.channel.send(getFormatedField())
         round(field, challenger, duelist)
 
@@ -140,6 +132,9 @@ client.on("message", function (message) {
                     client.on('message', message => {
                         if (message.author.bot) return;
                         if (message.content != "") {
+                            if (checkMate(field, "w") == true || checkMate(field, "b") == true) {
+                                return
+                            }
                             if (message.author.id == challenger.id && turncount == 0) {
 
                                 turncount = 1
@@ -159,14 +154,17 @@ client.on("message", function (message) {
                             else if (message.author.id != challenger.id && message.author.id != duelist.id) {
                                 message.channel.send("You are not playing")
                             }
+                            
                             if (checkMate(field, "w") == true || checkMate(field, "b") == true) {
                                 return
                             }
                             else {
                                 round(field, challenger, duelist)
                             }
+                            return
                         }
                         return
+                    
                     })
                 } catch (error) {
 
@@ -258,6 +256,7 @@ client.on("message", function (message) {
             }
 
             if (color == "w") {
+                i = 0;
                 switch (field[y][x]) {
                     case wp:
                         console.log("Pawn selected");
@@ -273,7 +272,7 @@ client.on("message", function (message) {
 
                     case wn: // I AM I AM COOM
                         console.log("knight selected")
-                        bishop(field, message, x, y, fx, fy);
+                        knight(field, message, x, y, fx, fy);
                         message.channel.send(getFormatedField())
                         break; //coomer detected
                     case wr:
@@ -285,6 +284,7 @@ client.on("message", function (message) {
                         console.log("White King")
                         king(field, message, x, y, fx, fy)
                         message.channel.send(getFormatedField())
+                        break;//aka breadlink;
                     case wq:
                         console.log("White Queen")
                         queen(field, message, x, y, fx, fy)
@@ -297,6 +297,7 @@ client.on("message", function (message) {
 
             }
             else if (color == "b") {
+                i = 0;
                 switch (field[y][x]) {
                     case bp:
                         console.log("Pawn selected")
@@ -322,6 +323,7 @@ client.on("message", function (message) {
                         console.log("Black King")
                         king(field, message, x, y, fx, fy)
                         message.channel.send(getFormatedField())
+                        break;
                     default:
                         message.channel.send("Wrong Field Selected")
                         break;
@@ -346,14 +348,13 @@ client.on("message", function (message) {
             moved = true
         }
         if (fx - x != 0) {
-            if (field[y + 1][x + 1] != w && field[y + 1][x - 1] != w && field[y + 1][x + 1] != b && field[y + 1][x - 1] != b) {
+            if (field[y + 1][x + 1] != w && field[y + 1][x + 1] != b || field[y + 1][x - 1] != w && field[y + 1][x - 1] != b) {
                 canibalism(field, message, x, y, fx, fy, 0)
             }
             if (moved == true) {
                 //   
                 if (fy - y == 1) {
                 } if (field[fy][fx] == w || field[fy][fx] == b) {
-                    message.channel.send("I AM RETARDED");
                     field[fy][fx] = field[y][x];
                     field[y][x] = wab[y][x];
                 }
@@ -368,17 +369,16 @@ client.on("message", function (message) {
                 console.log("Future field" + field[fy][fx])
                 if (field[fy][fx] == w || field[fy][fx] == b) {
                     //stöp stöp
-                    message.channel.send("I AM RETARDED 2");
                     field[fy][fx] = field[y][x];
                     field[y][x] = wab[y][x];
                     console.log('Success')
                 } else {
-                    message.channel.send("Not a Valid Move 2")
+                    message.channel.send("Not a Valid Move")
                 }
                 // do the or thingy so that the user cant type -x or 0
             }
             else {
-                message.channel.send("Non Non madame, c'est ne pas possible")
+                message.channel.send("Illegal Move")
             }
         }
     }
@@ -389,39 +389,33 @@ client.on("message", function (message) {
             moved = true
         }
         if (fx - x != 0) {
-            if (field[y - 1][x + 1] != w && field[y - 1][x - 1] != w && field[y - 1][x + 1] != b && field[y - 1][x - 1] != b) {
+            if (field[y - 1][x + 1] != w && field[y - 1][x + 1] != b || field[y - 1][x - 1] != w  && field[y - 1][x - 1] != b) {
                 canibalism(field, message, x, y, fx, fy, 0)
             }
             if (moved == true) {
                 //   
                 if (y - fy == 1) {
                 } if (field[fy][fx] == w || field[fy][fx] == b) {
-                    message.channel.send("I AM RETARDED");
                     field[fy][fx] = field[y][x];
                     field[y][x] = wab[y][x];
                 }
-                // do the or thingy so that the user cant type -x or 0
-                console.log("Success");
             } else {
                 message.channel.send("Not a Valid Move")
             }
         } else {
             if (y - fy == 2 || y - fy == 1) {
-                //replace(field);
                 console.log("Future field" + field[fy][fx])
                 if (field[fy][fx] == w || field[fy][fx] == b) {
-                    //stöp stöp
-                    message.channel.send("I AM RETARDED 2");
                     field[fy][fx] = field[y][x];
                     field[y][x] = wab[y][x];
                     console.log('Success')
                 } else {
-                    message.channel.send("Not a Valid Move 2")
+                    message.channel.send("Not a Valid Move ")
                 }
                 // do the or thingy so that the user cant type -x or 0
             }
             else {
-                message.channel.send("Non Non madame, c'est ne pas possible")
+                message.channel.send("Illegal")
             }
         }
     }
@@ -661,12 +655,14 @@ client.on("message", function (message) {
         if (fx - x == 2 || x - fx == 2) {
             //fx = y 
             if (fy - y == 1 || y - fy == 1) {
+                console.log('did canni 1')
                 canibalism(field, message, x, y, fx, fy, 0)
             } else {
                 message.channel.send('SCUMBAG GO DO RIGHT TURN L IDIOT')
             }
         } else if (fy - y == 2 || y - fy == 2) {
             if (fx - x == 1 || x - fx == 1) {
+                console.log('did canni 2')
                 canibalism(field, message, x, y, fx, fy, 0)
             } else {
                 // KNIGHT GOES 2 front or back then one left or right idiot @alex
@@ -676,12 +672,14 @@ client.on("message", function (message) {
         if (fx + x == 2 || x + fx == 2) {
             //fx = y 
             if (fy - y == 1 || y - fy == 1) {
+                console.log('did canni 3')
                 canibalism(field, message, x, y, fx, fy, 0)
             } else {
                 message.channel.send('SCUMBAG GO DO RIGHT TURN L IDIOT')
             }
         } else if (fy + y == 2 || y + fy == 2) {
             if (fx - x == 1 || x - fx == 1) {
+                console.log('did canni 4')
                 canibalism(field, message, x, y, fx, fy, 0)
             } else {
                 // KNIGHT GOES 2 front or back then one left or right idiot @alex
@@ -706,7 +704,6 @@ client.on("message", function (message) {
                     console.log(thing + " COMPARET TO FIELD: " + field[fy][fx]);
                     console.log("IS IT DETECTED" + detected);
                     if (field[fy][fx] == thing) {
-                        message.channel.send("NO CANIBALISM ALLOWED HERE (black pawns)");
                         detected = true;
                         break;
                     }
@@ -722,7 +719,7 @@ client.on("message", function (message) {
         if (white == true) {
             for (let element of whitePawns) {
                 if (field[fy][fx] == element) {
-                    message.channel.send("NO CANIBALISM ALLOWED HERE");
+
                     detected = true;
                     break;
                 }
@@ -731,14 +728,11 @@ client.on("message", function (message) {
         }
         if (detected == false) {
             console.log("worked white");
-            //field[fy][fx] = field[y][x]
-            message.channel.send("POGGERS");
+
 
             field[fy][fx] = field[y][x]; //TODO: FIX  THE MOVING SHITE AMOUGS
             field[y][x] = wab[y][x];
-            //field[y][x] = wab[y][x]
-            //message.channel.send("VANISHED");
-            //*message.channel.send(getFormatedField());
+
         }
     }
     function checkMate(field, color) {
@@ -752,7 +746,7 @@ client.on("message", function (message) {
                         return false;
                     }
                     else if (count == 64) {
-                        message.channel.send("Black side won! now fck off");
+                        message.channel.send("Black side won!");
                         return true
                     }
                     //return false;
@@ -766,7 +760,7 @@ client.on("message", function (message) {
                     if (singlefield == bk) {
                         return false;
                     } else if (count == 64) {
-                        message.channel.send("White side won! now fck off");
+                        message.channel.send("White side won!");
                         return true
                     }
 
@@ -777,5 +771,4 @@ client.on("message", function (message) {
     }
 
 })
-client.login(config.BOT_TOKEN) //this ic from yves c
-// Iluminati
+client.login(config.BOT_TOKEN)
