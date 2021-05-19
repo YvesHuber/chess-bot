@@ -123,18 +123,18 @@ client.on("message", function (message) {
 
         try {
             console.log(duelist.id)
-        } catch(err){
+        } catch (err) {
             message.channel.send("No member was mentiond")
             return
         }
 
         message.channel.send(getFormatedField())
-            round(field, challenger, duelist)
-            
+        round(field, challenger, duelist)
+
 
         function round(field, challenger, duelist) {
             let turncount = 0
-            
+
             try {
                 try {
                     client.on('message', message => {
@@ -159,14 +159,14 @@ client.on("message", function (message) {
                             else if (message.author.id != challenger.id && message.author.id != duelist.id) {
                                 message.channel.send("You are not playing")
                             }
-                            if (checkMate(field, "w") == true || checkMate(field, "b") == true){
+                            if (checkMate(field, "w") == true || checkMate(field, "b") == true) {
                                 return
                             }
                             else {
-                                round(field,challenger,duelist)
+                                round(field, challenger, duelist)
                             }
                         }
-                    return
+                        return
                     })
                 } catch (error) {
 
@@ -283,7 +283,7 @@ client.on("message", function (message) {
                         break;
                     case wk:
                         console.log("White King")
-                        king(field,message,x,y,fx,fy)
+                        king(field, message, x, y, fx, fy)
                         message.channel.send(getFormatedField())
                     case wq:
                         console.log("White Queen")
@@ -320,7 +320,7 @@ client.on("message", function (message) {
                         break;
                     case bk:
                         console.log("Black King")
-                        king(field,message,x,y,fx,fy)
+                        king(field, message, x, y, fx, fy)
                         message.channel.send(getFormatedField())
                     default:
                         message.channel.send("Wrong Field Selected")
@@ -345,18 +345,15 @@ client.on("message", function (message) {
         if (y != 1) {
             moved = true
         }
-        if (moved == true) {
-            //   
-            if (fy - y == 1) {
-
-                //replace(field);
-                if (fx - x > 0 || fx - x < 0) {
-                    if (field[y + 1][x + 1] != w || field[y + 1][x - 1] != w || field[y + 1][x + 1] != b || field[y + 1][x - 1] != b) {
-                        canibalism(field, message, x, y, fx, fy, 0)
-                    }
-                }
-
-                else if (field[fy][fx] == w || field[fy][fx] == b) {
+        if (fx - x != 0) {
+            if (field[y + 1][x + 1] != w && field[y + 1][x - 1] != w && field[y + 1][x + 1] != b && field[y + 1][x - 1] != b) {
+                canibalism(field, message, x, y, fx, fy, 0)
+            }
+            if (moved == true) {
+                //   
+                if (fy - y == 1) {
+                } if (field[fy][fx] == w || field[fy][fx] == b) {
+                    message.channel.send("I AM RETARDED");
                     field[fy][fx] = field[y][x];
                     field[y][x] = wab[y][x];
                 }
@@ -366,21 +363,17 @@ client.on("message", function (message) {
                 message.channel.send("Not a Valid Move")
             }
         } else {
-            if (fx - x > 0 || fx - x < 0) {
-                if (field[y + 1][x + 1] != w || field[y + 1][x - 1] != w || field[y + 1][x + 1] != b || field[y + 1][x - 1] != b) {
-                    canibalism(field, message, x, y, fx, fy, 0)
-                }
-            }
             if (fy - y == 2 || fy - y == 1) {
                 //replace(field);
                 console.log("Future field" + field[fy][fx])
                 if (field[fy][fx] == w || field[fy][fx] == b) {
                     //stöp stöp
+                    message.channel.send("I AM RETARDED 2");
                     field[fy][fx] = field[y][x];
                     field[y][x] = wab[y][x];
                     console.log('Success')
                 } else {
-                    message.channel.send("Not a Valid Move")
+                    message.channel.send("Not a Valid Move 2")
                 }
                 // do the or thingy so that the user cant type -x or 0
             }
@@ -395,19 +388,17 @@ client.on("message", function (message) {
         if (y != 6) {
             moved = true
         }
-        if (moved == true) {
-            //   
-            if (y - fy == 1) {
-
-                //replace(field);
-                if (fx - x > 0 || fx - x < 0) {
-                    if (field[y - 1][x + 1] != w || field[y - 1][x - 1] != w || field[y - 1][x + 1] != b || field[y - 1][x - 1] != b) {
-                        canibalism(field, message, x, y, fx, fy, 0);
-                    }
-                }
-
-                else if (field[fy][fx] == w || field[fy][fx] == b) {
-                    canibalism(field, message, x, y, fx, fy, 0)
+        if (fx - x != 0) {
+            if (field[y - 1][x + 1] != w && field[y - 1][x - 1] != w && field[y - 1][x + 1] != b && field[y - 1][x - 1] != b) {
+                canibalism(field, message, x, y, fx, fy, 0)
+            }
+            if (moved == true) {
+                //   
+                if (y - fy == 1) {
+                } if (field[fy][fx] == w || field[fy][fx] == b) {
+                    message.channel.send("I AM RETARDED");
+                    field[fy][fx] = field[y][x];
+                    field[y][x] = wab[y][x];
                 }
                 // do the or thingy so that the user cant type -x or 0
                 console.log("Success");
@@ -418,21 +409,19 @@ client.on("message", function (message) {
             if (y - fy == 2 || y - fy == 1) {
                 //replace(field);
                 console.log("Future field" + field[fy][fx])
-                if (field[y - 1][x + 1] != w || field[y - 1][x - 1] != w || field[y - 1][x + 1] != b || field[y - 1][x - 1] != b) {
-                    let moving = fx - x;
-                    canibalism(field, message, x, y, fx, fy, moving);
-                }
-                else if (field[fy][fx] == w || field[fy][fx] == b) {
+                if (field[fy][fx] == w || field[fy][fx] == b) {
                     //stöp stöp
-                    canibalism(field, message, x, y, fx, fy, 0)
+                    message.channel.send("I AM RETARDED 2");
+                    field[fy][fx] = field[y][x];
+                    field[y][x] = wab[y][x];
                     console.log('Success')
                 } else {
-                    message.channel.send("Not a Valid Move")
+                    message.channel.send("Not a Valid Move 2")
                 }
                 // do the or thingy so that the user cant type -x or 0
             }
             else {
-                message.channel.send("Non Non madame, ca'est ne pas possible")
+                message.channel.send("Non Non madame, c'est ne pas possible")
             }
         }
     }
@@ -743,14 +732,10 @@ client.on("message", function (message) {
         if (detected == false) {
             console.log("worked white");
             //field[fy][fx] = field[y][x]
-            if (moving == 0) {
-                message.channel.send("POGGERS");
-                field[fy][fx] = field[y][x]; //TODO: FIX  THE MOVING SHITE AMOUGS
-                field[y][x] = wab[y][x];
-            } else {
-                field[fy][x + moving] = field[y][x]; //TODO: FIX  THE MOVING SHITE AMOUGS
-                field[y][x] = wab[y][x];
-            }
+            message.channel.send("POGGERS");
+
+            field[fy][fx] = field[y][x]; //TODO: FIX  THE MOVING SHITE AMOUGS
+            field[y][x] = wab[y][x];
             //field[y][x] = wab[y][x]
             //message.channel.send("VANISHED");
             //*message.channel.send(getFormatedField());
@@ -764,11 +749,9 @@ client.on("message", function (message) {
                     console.log("white singlefield: " + singlefield);
                     count++
                     if (singlefield == wk) {
-                       
                         return false;
-    
                     }
-                    else if (count == 64 ){
+                    else if (count == 64) {
                         message.channel.send("Black side won! now fck off");
                         return true
                     }
@@ -781,13 +764,12 @@ client.on("message", function (message) {
                 for (let singlefield of singlerow) {
                     count++
                     if (singlefield == bk) {
-                       
                         return false;
-                    } else if (count == 64 ){
+                    } else if (count == 64) {
                         message.channel.send("White side won! now fck off");
                         return true
                     }
-                    
+
                     //return false;
                 }
             }
